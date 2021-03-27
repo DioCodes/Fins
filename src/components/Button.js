@@ -3,13 +3,17 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 
 import * as Haptics from "expo-haptics";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from '@react-navigation/native';
+
 import theme from '../theme';
 
 export const Button = ({ 
   onPress, 
   iconName,
-  iconSize,
+  iconSize = 30,
+  iconColor,
   text,
+  textStyle,
   style = styles.mainContainer, 
 }) => {
   const onPressHandler = () => {
@@ -17,15 +21,17 @@ export const Button = ({
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
+  const { colors } = useTheme();
+
   return (
     <TouchableOpacity
-      style={{ style}}
+      style={{ ...style }}
       activeOpacity={theme.ACTIVE_OPACITY}
       onPress={onPressHandler}
     >
       <View style={styles.btnCont}>
-        <Ionicons name={iconName} size={iconSize} color="white" />
-        {text ? <Text style={styles.header}>{text}</Text> : null}
+        {iconName ? <Ionicons name={iconName} size={iconSize} color={iconColor || colors.secondary} /> : null}
+        {text ? <Text style={[ styles.header, {color: colors.primary}, textStyle ]}>{text}</Text> : null}
       </View>
     </TouchableOpacity>
   );
@@ -33,8 +39,7 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: theme.BTN_PRIMARY,
-    borderRadius: 10,
+    borderRadius: 30,
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
@@ -43,7 +48,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    color: 'white',
     fontSize: 16,
     fontFamily: 'norms-bold',
   },

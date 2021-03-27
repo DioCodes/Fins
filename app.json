@@ -8,7 +8,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0A0D12"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,7 +17,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "userInterfaceStyle": "automatic",
+      "supportsTablet": true,
+      "backgroundColor": "#383A42"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,6 +29,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": ""
   }
 }
