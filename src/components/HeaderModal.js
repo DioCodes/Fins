@@ -8,7 +8,7 @@ const Header = ({ navigation }) => {
   return (
     <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
       <Item
-        iconName="ios-close-circle"
+        iconName="ios-close-sharp"
         onPress={() => {
           navigation.goBack();
         }}

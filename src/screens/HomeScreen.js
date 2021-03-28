@@ -27,35 +27,37 @@ export const HomeScreen = ({ navigation }) => {
   
   const onFocus = () => {
     setHide(true)
-  }
+  };
 
   const onBlur = () => {
     setHide(false)
-  }
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
-    <View style={[styles.main, { backgroundColor: colors.primary }]}>
-      <View style={styles.wrapper}>
-        <Budget onFocus={onFocus} onBlur={onBlur} />
-        <Button 
-          iconName="add-circle" 
-          iconSize={40} 
-          onPress={() => {
-            // dispatch(addBudgetGroup("Инвестиции", 10))
-            // dispatch(removeBudgetGroup())
-            
-            navigation.push("AddBudgetGroupScreen")
-            // console.log(budgetGroups)
-          }} 
-        />
-      </View>
+      <View style={[styles.main, { backgroundColor: colors.primary }]}>
+        <View style={styles.wrapper}>
+          <Budget onFocus={onFocus} onBlur={onBlur} />
+          <Button 
+            style={{...styles.submitBtn, backgroundColor: colors.secondary,}} 
+            iconName="ios-add" 
+            iconSize={30} 
+            iconColor={colors.primary}
+            onPress={() => {
+              // dispatch(addBudgetGroup("Инвестиции", 10))
+              // dispatch(removeBudgetGroup())
+              
+              navigation.push("AddBudgetGroupScreen")
+              console.log(budgetGroups)
+            }} 
+          />
+        </View>
 
-      <ScrollView contentContainerStyle={{ flex: 1, paddingHorizontal: 20 }}>
-        <BudgetChartPlan />
-        {hide ? <View style={styles.hider}/> : null}
-      </ScrollView>
-    </View>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20 }}>
+          <BudgetChartPlan navigation={navigation} />
+          {hide ? <View style={styles.hider}/> : null}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   )
 };
@@ -66,7 +68,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     paddingHorizontal: 20,
-    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -79,6 +80,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     opacity: .75,
     alignSelf: 'center'
-  }
-
+  },
+  submitBtn: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    borderRadius: 60,
+  },
 });

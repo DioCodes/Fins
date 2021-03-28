@@ -5,10 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from '@react-navigation/native';
 
 import { PieChart } from "react-native-chart-kit";
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import theme from '../theme';
 
-export const BudgetChartPlan = () => {
-  const [allPercents, setAllPercents] = useState(0)
-  const [isData, setIsData] = useState(false)
+export const BudgetChartPlan = ({ navigation }) => {
+  const [allPercents, setAllPercents] = useState(0);
+  const [isData, setIsData] = useState(false);
   const screenWidth = Dimensions.get("window").width;
   const { colors } = useTheme();
   const scheme = useColorScheme();
@@ -34,39 +36,49 @@ export const BudgetChartPlan = () => {
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
   };
 
-  const ChartLegend = ({name, color, percent}) => {
+  const ChartLegend = ({name, color, percent, id}) => {
     return (
-      <View style={styles.chartLegendContainer}>
-        <View style={{...styles.chartLegend, backgroundColor: color}} >
-          <Text style={[styles.chartLegendPercent, {color: colors.primary}]}>{`${percent}%`}</Text>
-        </View>
+        <TouchableOpacity 
+          activeOpacity={theme.ACTIVE_OPACITY} 
+          style={{ flexDirection: 'row' }}
+          onPress={() => navigation.navigate("EditBudgetGroupScreen", {
+            groupId: id,
+            groupName: name,
+            groupPercent: percent
+          })}
+        >
+          <View style={styles.chartLegendContainer}>
+            <View style={{ ...styles.chartLegend, backgroundColor: color }} >
+              <Text style={[ styles.chartLegendPercent, { color: colors.primary } ]}>{`${percent}%`}</Text>
+            </View>
 
-        <View style={styles.wrapper}>
-          <Text style={[styles.chartLegendHeader, {color: colors.secondary,}]}>{name} </Text>
-          {/* Превращает число в валютный текст */}
-          <Text style={[styles.chartLegendText, {color: colors.tertiary,}]}>
-            {`${parseFloat((budget * percent / 100).toFixed(0)).toLocaleString("UAh", {minimumFractionDigits: 0})} ₴`}
-          </Text>
-        </View>
-      </View>
+            <View style={styles.wrapper}>
+              <Text style={[ styles.chartLegendHeader, { color: colors.secondary } ]}>{name} </Text>
+              {/* Превращает число в валютный текст */}
+              <Text style={[ styles.chartLegendText, { color: colors.tertiary } ]}>
+                {`${parseFloat((budget * percent / 100).toFixed(0)).toLocaleString("UAh", {minimumFractionDigits: 0})} ₴`}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
     )
-  }
+  };
 
   const UnusedChartLegend = ({color, percent}) => {
     return (
-      <View style={[styles.unusedChartLegendContainer]}>
-        <View style={{...styles.unusedChartLegend, backgroundColor: color}} >
-          <Text style={[styles.unusedChartLegendPercent, {color: "white" }]}>
+      <View style={[ styles.unusedChartLegendContainer ]}>
+        <View style={{ ...styles.unusedChartLegend, backgroundColor: color }} >
+          <Text style={[ styles.unusedChartLegendPercent, { color: colors.primary } ]}>
             {percent}%
           </Text>
         </View>
 
-        <Text style={[styles.unusedChartLegendText, {color: colors.tertiary,}]}>
+        <Text style={[ styles.unusedChartLegendText, { color: colors.tertiary } ]}>
           {`${parseFloat((budget * percent / 100).toFixed(0)).toLocaleString("UAh", {minimumFractionDigits: 0})} ₴`}
         </Text>
       </View>
     )
-  }
+  };
 
   useEffect(() => {
     budgetGroups.map((info) => {
@@ -79,7 +91,7 @@ export const BudgetChartPlan = () => {
     } else if (data.length == 0) {
       setIsData(false)
     }
-  }, [budgetGroups])
+  }, [budgetGroups]);
     
   let legendsListArr = data.map((info, key) => {
     data = data.sort((a,b) => {
@@ -90,15 +102,16 @@ export const BudgetChartPlan = () => {
       }
     });
     return (
-      data[key].color = info.id ? 'red' : scheme === 'dark' ? 
+      data[key].color = scheme === 'dark' ? 
       `rgba(255, 255, 255, ${(billsCount-key) / billsCount})` : 
       `rgba(10, 13, 18, ${(billsCount-key) / billsCount})`,
 
       <ChartLegend 
         key={key} 
         name={info.name} 
+        id={info.id}
         color={
-          info.id ? 'red' : scheme === 'dark' ? 
+         scheme === 'dark' ? 
             `rgba(255, 255, 255, ${(billsCount-key) / billsCount})` : 
             `rgba(10, 13, 18, ${(billsCount-key) / billsCount})`
         }
@@ -122,10 +135,9 @@ export const BudgetChartPlan = () => {
       />
 
       {
-        percentLeft > 0 ? (
+        percentLeft > 0 || percentLeft < 0 ? (
           <UnusedChartLegend
-            // color={scheme === 'dark' ? "blue" : "blue"}
-            color="blue"
+            color={colors.secondary}
             percent={100-allPercents}
           />
         ) : null
@@ -140,8 +152,8 @@ export const BudgetChartPlan = () => {
 
 const styles = StyleSheet.create({
   chartContainer: {
-    justifyContent: 'center',
     alignItems: 'center',
+    flex: 1
   },
   chart: {
     marginTop: -10
@@ -150,7 +162,6 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    // backgroundColor: 'red',
   },
   wrapper: {
     justifyContent: 'center',
@@ -188,7 +199,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',  
     width: '100%',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
   },
   chartLegend: {
     width: 55,

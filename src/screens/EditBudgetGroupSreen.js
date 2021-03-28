@@ -1,35 +1,34 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button } from '../components/Button';
 import { HeaderModal } from '../components/HeaderModal';
-import { addBudgetGroup } from '../store/actions/budgetActions';
-import { idGenerator } from '../../assets/idGenerator';
+import { Button } from '../components/Button';
 import { loadPercents } from '../../assets/loadPercents';
+import { changeBudgetGroup, removeBudgetGroup } from '../store/actions/budgetActions';
 
-export const AddBudgetGroupScreen = ({ navigation }) => {
-  const [groupName, setGroupName] = useState("");
-  const [groupPercent, setGroupPercent] = useState(40);
+export const EditBudgetGroupScreen = ({ route, navigation }) => {
+  const { groupName, groupId, groupPercent } = route.params;
+
+  const [newGroupName, setNewGroupName] = useState(groupName);
+  const [newGroupPercent, setNewGroupPercent] = useState(groupPercent);
   const [percents, setPercents] = useState([]);
-  // const [groupMoney, setGroupMoney] = useState();
 
   useLayoutEffect(() => {
     navigation.setOptions(
-      HeaderModal(navigation, "Создать группу"),
+      HeaderModal(navigation, `Редактировать группу`),
     );
 
-    setPercents(loadPercents());
+    setPercents(loadPercents())
   }, []);
-  
+
   const { colors } = useTheme();
   const dispatch = useDispatch();
 
   return (
     <View style={styles.main}>
-
       <View style={styles.sheetContainerContent}>
         <View
           style={{
@@ -47,9 +46,9 @@ export const AddBudgetGroupScreen = ({ navigation }) => {
               fontSize: 20,
             }}
             clearButtonMode="while-editing"
-            value={groupName}
+            value={newGroupName}
             onChangeText={(text) => {
-              setGroupName(text);
+              setNewGroupName(text);
             }}
             placeholder={"Название группы"}
             maxLength={30}
@@ -61,9 +60,9 @@ export const AddBudgetGroupScreen = ({ navigation }) => {
 
       <View style={styles.budgetDistribution}>
         <Picker
-          selectedValue={groupPercent}
+          selectedValue={newGroupPercent}
           onValueChange={(itemValue, itemIndex) =>
-            setGroupPercent(itemValue)
+            setNewGroupPercent(itemValue)
           }
           style={{
             justifyContent: 'center',
@@ -81,21 +80,31 @@ export const AddBudgetGroupScreen = ({ navigation }) => {
         Выберите, сколько процентов вы хотите отложить
       </Text>
 
-    <View style={styles.wrapper}>
-      <Button 
-        iconName="checkmark"
-        iconSize={30}
-        iconColor={colors.primary}
-        onPress={() => {
-          dispatch(addBudgetGroup(groupName, groupPercent, idGenerator()))
-          navigation.goBack()
-        }}
-      />
-    </View>
+      <View style={styles.wrapper}>
+        <Button 
+          iconName="trash-outline"
+          iconSize={30}
+          iconColor={colors.secondary}
+          style={{ borderWidth: 1, borderColor: colors.secondary, backgroundColor: 'transparent' }}
+          onPress={() => {
+            dispatch(removeBudgetGroup(groupId))
+            navigation.goBack()
+          }}
+        />
+        <Button 
+          iconName="checkmark"
+          iconSize={30}
+          iconColor={colors.primary}
+          onPress={() => {
+            dispatch(changeBudgetGroup(newGroupName, newGroupPercent, groupId))
+            navigation.goBack()
+          }}
+        />
+      </View>
 
-    </View>
+    </View> 
   )
-}
+};
 
 const styles = StyleSheet.create({
   main: {
@@ -118,13 +127,12 @@ const styles = StyleSheet.create({
     // marginBottom: 30
   },
   wrapper: {
-    flex: 1,
     width: '100%',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    // backgroundColor: 'red',
-    marginTop: 30,
-    paddingBottom: 30
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 30
   },
   descriptionText: {
     opacity: .25,

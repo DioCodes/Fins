@@ -14,7 +14,7 @@ export const Button = ({
   iconColor,
   text,
   textStyle,
-  style = styles.mainContainer, 
+  style, 
 }) => {
   const onPressHandler = () => {
     onPress();
@@ -25,12 +25,25 @@ export const Button = ({
 
   return (
     <TouchableOpacity
-      style={{ ...style }}
+      style={{ backgroundColor: colors.secondary, ...styles.mainContainer, ...style }}
       activeOpacity={theme.ACTIVE_OPACITY}
       onPress={onPressHandler}
     >
       <View style={styles.btnCont}>
-        {iconName ? <Ionicons name={iconName} size={iconSize} color={iconColor || colors.secondary} /> : null}
+        {iconName ? 
+          <Ionicons 
+            name={iconName} 
+            size={iconSize} 
+            color={iconColor || colors.secondary} 
+            style={{
+              lineHeight: 50,
+              height: 50,
+              width: 50,
+              textAlign: "center",
+            }}
+          /> 
+        : null}
+
         {text ? <Text style={[ styles.header, {color: colors.primary}, textStyle ]}>{text}</Text> : null}
       </View>
     </TouchableOpacity>
@@ -39,16 +52,17 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   mainContainer: {
+    height: 50,
     borderRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
   },
   btnCont: {
     width: "100%",
+    height: "100%",
     alignItems: "center",
+    justifyContent: "center",
   },
   header: {
     fontSize: 16,
-    fontFamily: 'norms-bold',
+    fontFamily: 'norms-medium',
   },
 });

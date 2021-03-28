@@ -18,6 +18,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import theme from "../theme";
 import { HomeScreen } from "../screens/HomeScreen";
 import { AddBudgetGroupScreen } from "../screens/AddBudgetGroupScreen";
+import { EditBudgetGroupScreen } from "../screens/EditBudgetGroupSreen";
 
 export const MainNavigation = ({ navigation }) => {
   const Stack = createStackNavigator();
@@ -29,7 +30,7 @@ export const MainNavigation = ({ navigation }) => {
       ...DarkTheme.colors,
       primary: 'rgb(10, 13, 18)',
       secondary: '#fff',
-      tertiary: 'rgba(255, 255, 255, .5)',
+      tertiary: 'rgba(255, 255, 255, .75)',
       btn_primary: "rgba(255, 255, 255, .05)",
       quaternary: "rgba(255, 255, 255, .05)",
     },
@@ -41,7 +42,7 @@ export const MainNavigation = ({ navigation }) => {
       ...DefaultTheme.colors,
       primary: '#fff',
       secondary: 'rgb(10, 13, 18)',
-      tertiary: 'rgba(0, 0, 0, .5)',
+      tertiary: 'rgba(0, 0, 0, .75)',
       btn_primary: "rgba(0, 0, 0, .05)",
       quaternary: "rgba(0, 0, 0, .05)",
     },
@@ -80,6 +81,11 @@ export const MainNavigation = ({ navigation }) => {
         <Stack.Screen 
           name="AddBudgetGroupScreen" 
           component={AddBudgetGroupScreen} 
+          options={modalOptions}
+        />
+        <Stack.Screen 
+          name="EditBudgetGroupScreen" 
+          component={EditBudgetGroupScreen} 
           options={modalOptions}
         />
       </Stack.Navigator>
